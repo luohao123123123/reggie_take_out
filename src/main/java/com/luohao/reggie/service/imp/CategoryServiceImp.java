@@ -33,7 +33,7 @@ public class CategoryServiceImp extends ServiceImpl<CategoryMapper, Category> im
         //查询当前分类是否已经关联了菜品，如果已经关联，抛出一个异常
         LambdaQueryWrapper<Dish> dishQueryWrapper=new LambdaQueryWrapper<>();
         dishQueryWrapper.eq(Dish::getCategoryId,id);  //添加查询条件，菜品表的categoryId要等于分类表的id
-        int dishCount = dishService.count(dishQueryWrapper);  //执行查询
+        long dishCount = dishService.count(dishQueryWrapper);  //执行查询
         if(dishCount>0){ //如果大于0，说明这个菜品分类关联了菜品，则抛出业务异常
             throw new CustomException("当前分类关联了菜品，无法删除"); //抛出自定义的业务异常
         }
@@ -41,7 +41,7 @@ public class CategoryServiceImp extends ServiceImpl<CategoryMapper, Category> im
         //查询当前分类是否已经关联了套餐，如果已经关联，抛出一个异常
         LambdaQueryWrapper<Setmeal> setMealQueryWrapper=new LambdaQueryWrapper<>();
         setMealQueryWrapper.eq(Setmeal::getCategoryId,id);  //添加查询条件，菜品表的categoryId要等于分类表的id
-        int setMealCount = setmealService.count(setMealQueryWrapper);  //执行查询
+        long setMealCount = setmealService.count(setMealQueryWrapper);  //执行查询
         if(setMealCount>0){ //如果大于0，说明这个套餐分类关联了套餐，则抛出业务异常
             throw new CustomException("当前分类关联了套餐，无法删除"); //抛出自定义的业务异常
         }

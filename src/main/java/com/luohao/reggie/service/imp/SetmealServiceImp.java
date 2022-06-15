@@ -161,7 +161,7 @@ public class SetmealServiceImp extends ServiceImpl<SetmealMapper,Setmeal> implem
         LambdaQueryWrapper<Setmeal> queryWrapper=new LambdaQueryWrapper<>();
         queryWrapper.in(Setmeal::getId,ids);
         queryWrapper.eq(Setmeal::getStatus,1);
-        int count = this.count(queryWrapper);  //这里代表，状态为在售状态的套餐个数
+        long count = this.count(queryWrapper);  //这里代表，状态为在售状态的套餐个数
         if(count>0){ //如果在售状态个数大于0，则说明要删除的套餐中，存在状态为在售状态的套餐，则无法删除，抛出自定义异常
             throw new CustomException("有"+count+"个套餐为在售状态，无法删除");
         }

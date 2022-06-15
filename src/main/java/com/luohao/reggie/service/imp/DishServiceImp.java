@@ -191,7 +191,7 @@ public class DishServiceImp extends ServiceImpl<DishMapper, Dish> implements Dis
         //1为在售状态，0为禁售状态
         queryWrapper.eq(Dish::getStatus,1);
         queryWrapper.in(Dish::getId,ids);
-        int count = this.count(queryWrapper);  //这里获取的count是状态为在售状态的菜品的个数
+        long count = this.count(queryWrapper);  //这里获取的count是状态为在售状态的菜品的个数
         //如果count大于0,说明，有状态为在售状态的菜品，则抛出业务异常
         if(count>0){
             throw new CustomException("有"+count+"个菜品正在销售无法删除");
@@ -200,7 +200,7 @@ public class DishServiceImp extends ServiceImpl<DishMapper, Dish> implements Dis
         //判断菜品是否包含在套餐中
         LambdaQueryWrapper<SetmealDish> queryWrapper1=new LambdaQueryWrapper<>();
         queryWrapper1.in(SetmealDish::getDishId,ids);
-        int count1 = setmealDishService.count(queryWrapper1);//这里获取的是套餐中包含菜品的个数
+        long count1 = setmealDishService.count(queryWrapper1);//这里获取的是套餐中包含菜品的个数
         //如果count1大于0，说明要删除的菜品中有包含在套餐的菜品，无法删除
         if(count1>0){
             throw new CustomException("有菜品包含在套餐中，无法删除");

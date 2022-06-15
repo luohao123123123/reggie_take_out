@@ -125,7 +125,7 @@ public class DishController {
         if(status==0){//要进行停售操作时,查询套餐菜品关系表中，这个菜品是否在某个套餐中
             LambdaQueryWrapper<SetmealDish> queryWrapper=new LambdaQueryWrapper<>();
             queryWrapper.in(SetmealDish::getDishId,ids);
-            int count = setmealDishService.count(queryWrapper); //这里的count是指在要停售的菜品中，包含在套餐中的菜品个数
+            long count = setmealDishService.count(queryWrapper); //这里的count是指在要停售的菜品中，包含在套餐中的菜品个数
             if(count>0){//如果count大于0，说明有菜品包含在套餐中，所有无法进行停售操作，抛出自定义异常
                 throw new CustomException("有菜品包含在套餐中，无法进行停售操作");
             }

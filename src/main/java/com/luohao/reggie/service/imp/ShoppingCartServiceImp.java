@@ -30,7 +30,7 @@ public class ShoppingCartServiceImp extends ServiceImpl<ShoppingCartMapper, Shop
         queryWrapper.eq(ShoppingCart::getUserId,BaseContext.getId());  //根据用户id查购物车
         queryWrapper.eq(shoppingCart.getDishId()!=null,ShoppingCart::getDishId,dishId);  //如果是菜品，则根据菜品id查购物车
         queryWrapper.eq(shoppingCart.getSetmealId()!=null,ShoppingCart::getSetmealId,setmealId); //如果是套餐。则根据套餐id差购物车
-        int count = this.count(queryWrapper); //这里获取的是购物车相同菜品或者套餐的数量
+        long count = this.count(queryWrapper); //这里获取的是购物车相同菜品或者套餐的数量
         //如果count大于，说明购物车已经添加过此菜品或者套餐了，则修改此菜品或者套餐的数量加1
         if(count>0) {
             ShoppingCart shoppingCart1 = this.getOne(queryWrapper);
