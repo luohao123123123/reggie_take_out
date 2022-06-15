@@ -64,6 +64,14 @@ spring:
             insert-allow:  true                                                       #允许插入操作
             delete-allow: true                                                        #删除数据操作
 
+################################################## Redis配置 ##########################################
+  redis: #springboot2.x版本，其内置的Redis中间件不再是Jedis，而是换成了lettuce
+    host: 192.168.213.60  #ip地址
+    port: 6379            #端口号
+    password: root        #密码
+    database: 0           #数据库名，0~15
+    timeout: 2000         #连接超时时长，单位：毫秒
+
 ################################################Mybatis-Plus配置#########################################
 mybatis-plus:
   configuration:
@@ -94,10 +102,3 @@ reggie:
 
 
 
-################################################## Redis配置 ##########################################
-  redis: #springboot2.x版本，其内置的Redis中间件不再是Jedis，而是换成了lettuce
-    host: 192.168.213.60  #ip地址
-    port: 6379            #端口号
-    password: root        #密码
-    database: 0           #数据库名，0~15
-    timeout: 2000         #连接超时时长，单位：毫秒

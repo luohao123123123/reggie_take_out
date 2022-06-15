@@ -3,19 +3,24 @@ package com.luohao.reggie.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.luohao.reggie.R.R;
 import com.luohao.reggie.bean.User;
+import com.luohao.reggie.common.BaseContext;
 import com.luohao.reggie.service.UserService;
 import com.luohao.reggie.utils.SMSUtils;
 import com.luohao.reggie.utils.ValidateCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Slf4j
@@ -24,6 +29,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
 
 
     /**
@@ -44,8 +53,12 @@ public class UserController {
             //打印出验证码
             log.info("验证码为：{}",code);
 
-            //将随机生成的验证码存在session中
-            session.setAttribute(phone,code);
+
+            //将随机生成的验证码存在session中()
+//            session.setAttribute(phone,code);
+            //todo:短信验证码优化，之前是存在session中，session默认的保存时长是30分钟，优化后可以保存到redis中，并且设置5分钟的过期时间，当用户登录之后把短信验证码删除
+            ValueOperations<String, String> stringType = stringRedisTemplate.opsForValue();
+            stringType.set(phone,code,5, TimeUnit.MINUTES);
 
             //调用阿里云的短信服务API完成短信发送
 //            SMSUtils.sendMessage("瑞吉外卖","",phone,code);  //这里因为申请阿里云的短信服务繁琐，所有只是一个示例代码
@@ -68,9 +81,14 @@ public class UserController {
         String code = map.get("code").toString();
 
         //获取存在session中的短信验证码
-        String sessionCode = session.getAttribute(phone).toString();
+//        String sessionCode = session.getAttribute(phone).toString();
+        //todo:短信验证码优化，这里获取存入redis中的短信验证码
+        ValueOperations<String, String> stringType = stringRedisTemplate.opsForValue();
+        String redisCode = stringType.get(phone);
         //如果前端填入的验证码与后端生成的验证码一致
-        if(!sessionCode.isEmpty() && code.equals(sessionCode)){
+        if(!redisCode.isEmpty() && code.equals(redisCode)){
+            //todo:短信验证码优化,登录成功之后则删除保存在redis中短信验证码
+            stringRedisTemplate.delete(phone);
             //判断用户是否是新用户
             LambdaQueryWrapper<User> queryWrapper=new LambdaQueryWrapper<>();
             queryWrapper.eq(User::getPhone,phone);
