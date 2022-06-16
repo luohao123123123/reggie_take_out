@@ -1,5 +1,6 @@
 package com.luohao.reggie.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.luohao.reggie.R.R;
@@ -19,10 +20,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -46,6 +52,9 @@ public class DishController {
     @Autowired
     private SetmealDishService setmealDishService;
 
+    @Autowired
+    private RedisTemplate<Object,Object> redisTemplate;
+
 
     /**
      * 新增菜品
@@ -57,6 +66,12 @@ public class DishController {
     public R<String> add(@RequestBody DishDto dishDto){
         //执行保存
         dishService.saveWithFlavor(dishDto);  //自定义的一个保存菜品信息和菜品口味信息的方法
+
+        //todo:用户菜品查看优化，如果后台新增菜品，则需要把缓存的菜品信息清除
+        HashOperations<Object, Object, Object> hashType = redisTemplate.opsForHash();
+        hashType.delete("dishInfo","dish_"+dishDto.getCategoryId()+"_status_1");
+
+
         return R.success("新增菜品成功");
     }
 
@@ -83,6 +98,8 @@ public class DishController {
     @DeleteMapping
     public  R<String> delete(@RequestParam(value = "ids") List<Long> ids){
         //直接返回自定义的删除方法
+        //todo:用户菜品查看优化，如果后台删除菜品，则需要把缓存的菜品信息清除
+        redisTemplate.delete("dishInfo");
         return dishService.delete(ids);
     }
 
@@ -110,6 +127,9 @@ public class DishController {
     @PutMapping
     public R<String> updateDish(@RequestBody DishDto dishDto){
         dishService.updateDishWithFlavor(dishDto);
+        //todo:用户菜品查看优化，如果后台修改菜品，则需要把缓存的菜品信息清除
+        HashOperations<Object, Object, Object> hashType = redisTemplate.opsForHash();
+        hashType.delete("dishInfo","dish_"+dishDto.getCategoryId()+"_status_1");
         return R.success("修改成功");
     }
 
@@ -140,6 +160,9 @@ public class DishController {
         }).collect(Collectors.toList());
         //更新菜品信息
         dishService.updateBatchById(dishList);
+
+        //todo:用户菜品查看优化，如果后台更新菜品信息，则需要把缓存的菜品信息清除
+        redisTemplate.delete("dishInfo");
         return R.success("菜品状态修改成功");
     }
 
@@ -147,15 +170,28 @@ public class DishController {
     /**
      * 1.套餐管理页面，新增或者修改套餐时点击添加菜品，回显对应的菜品信息
      * 2.移动端根据各菜品分类id查询相应的菜品信息以及菜品的口味信息
-     * @param categoryId 分类id
+     * @param dish 菜品信息
      * @return
      */
     @GetMapping("list")
-    public R<List<DishDto>> getDishByCategoryId(Long categoryId,String name){
+    public R<List<DishDto>> getDishByCategoryId(Dish dish){
+        //todo:用户菜品查看优化，用户第一次查询分类菜品信息，先去redis中查询有无信息
+            //定义redis中的key
+        String key="dish_"+dish.getCategoryId()+"_status_"+dish.getStatus();
+        HashOperations<Object, Object, Object> hashType = redisTemplate.opsForHash();
+        //获取redis中的缓存转为List<DishDto>
+        Object redisDishInfo = hashType.get("dishInfo", key);
+        //todo:用户菜品查看优化，如果redis缓存中有菜品信息，则直接返回缓存中的菜品信息
+        if(redisDishInfo!=null){
+            List<DishDto> redisDishInfo1 = JSON.parseArray(redisDishInfo.toString(), DishDto.class);
+            return R.success(redisDishInfo1);
+        }
+
+        //todo:用户菜品查看优化，如果redis缓存中不存在菜品信息，则直接查询数据库
         LambdaQueryWrapper<Dish> queryWrapper=new LambdaQueryWrapper<>();
         //添加过滤条件
-        queryWrapper.eq(categoryId!=null,Dish::getCategoryId,categoryId);
-        queryWrapper.like(name!=null,Dish::getName,name);
+        queryWrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
+        queryWrapper.like(dish.getName()!=null,Dish::getName,dish.getName());
             //过滤菜品状态为1的
         queryWrapper.eq(Dish::getStatus,1);
         queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
@@ -178,6 +214,11 @@ public class DishController {
             //返回dishDto
             return dishDto;
         }).collect(Collectors.toList());
+
+        //todo:用户菜品查看优化，如果redis缓存中不存在菜品信息，则把数据库中查询到的数据缓存到redis
+        hashType.put("dishInfo",key,JSON.toJSONString(dishDtoList));
+        redisTemplate.expire("dishInfo",60, TimeUnit.MINUTES); //设置一个小时的过期时间
+
         return R.success(dishDtoList);
     }
 }
