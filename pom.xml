@@ -71,7 +71,7 @@
             <scope>runtime</scope>
         </dependency>
 
-<!--添加 druid数据池的 starter-->
+<!--添加 druid数据池（德鲁伊）的 starter-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
@@ -88,6 +88,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+<!--数据库读写分离-->
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+            <version>4.0.0-RC1</version>
         </dependency>
 
 <!--阿里云短信服务-->

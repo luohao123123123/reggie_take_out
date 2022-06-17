@@ -5,6 +5,10 @@ spring:
   application:
     name: reggie_take_out
 
+#当遇到同样名字的bean，是否允许覆盖
+  main:
+    allow-bean-definition-overriding: true
+
 ################################################## 设置缓存过期时间 ##########################################
 
   cache:
@@ -14,12 +18,42 @@ spring:
 
 
 ################################################## 数据源连接信息 ##########################################
+#：没有使用读写分离和主从复制的数据源配置
+#  datasource:
+#    username: root
+#    password: 815421
+#    url: jdbc:mysql://localhost:3306/reggie?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false&characterEncoding=utf8
+#    driver-class-name: com.mysql.cj.jdbc.Driver
 
-  datasource:
-    username: root
-    password: 815421
-    url: jdbc:mysql://localhost:3306/reggie?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false&characterEncoding=utf8
-    driver-class-name: com.mysql.cj.jdbc.Driver
+#使用读写分离和主从复制的数据源配置
+
+  shardingsphere:
+    datasource:
+      names:  #配置多个数据源，可用逗号隔开
+        master,slave
+      master: #主数据源，进行写操作
+        type: com.alibaba.druid.pool.DruidDataSource
+        username: root
+        password: root
+        url: jdbc:mysql://192.168.213.60:3306/reggie?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false&characterEncoding=utf8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      slave: #从数据源，进行读操作
+        type: com.alibaba.druid.pool.DruidDataSource
+        username: root
+        password: root
+        url: jdbc:mysql://192.168.213.61:3306/reggie?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false&characterEncoding=utf8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
+    masterslave: #读写分离配置
+      load-balance-algorithm-type: round_robin #轮询策略
+      name: dataSource  #最终数据源名称
+      master-data-source-name: master #主库数据源名称
+      slave-data-source-names: slave #从库数据源名称
+    props:
+      sql:
+        show: true #开启sql显示
+
+
 
 
 
