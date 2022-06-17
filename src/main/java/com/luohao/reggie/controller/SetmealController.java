@@ -14,6 +14,8 @@ import com.luohao.reggie.service.SetmealDishService;
 import com.luohao.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +51,9 @@ public class SetmealController {
      * 新增套餐
      * @param setmealDto 前端页面与后端传输的数据模型
      * @return
+     * CacheEvict:可用于类或方法上；在执行完目标方法后，清除缓存中对应key的数据(如果缓存中有对应key的数据缓存的话)
      */
+//    @CacheEvict(value = "setmealInfo",key = "'setmeal_'+#setmealDto.getCategoryId()+'_status_'+#setmealDto.getStatus()")  //方法执行完之后清楚缓存
     @PostMapping
     public R<String>  add(@RequestBody SetmealDto setmealDto){
         //保存套餐的基本信息到套餐表
@@ -107,6 +111,7 @@ public class SetmealController {
      * @param setmealDto
      * @return
      */
+//    @CacheEvict(value = "setmealInfo",key = "'setmeal_'+#setmealDto.getCategoryId()+'_status_'+#setmealDto.getStatus()")  //方法执行完之后清楚缓存
     @PutMapping
     public R<String> update(@RequestBody SetmealDto setmealDto){
         //调用自定义的套餐修改方法
@@ -149,7 +154,12 @@ public class SetmealController {
      * 用于移动端的套餐显示
      * @param setmeal
      * @return
+     * Cacheable:@Cacheable：可用于类或方法上；在目标方法执行前，会根据key先去缓存中查询看是否有数据，
+     *                      有就直接返回缓存中的key对应的value值。不再执行目标方法；
+     *                      无则执行目标方法，并将方法的返回值作为value，并以键值对的形式存入缓存.
      */
+    //todo:用户套餐查看优化，用户第一次查询套餐信息，先去redis中查询有无信息
+//    @Cacheable(value = "setmealInfo",key = "'setmeal_'+#setmeal.getCategoryId()+'_status_'+#setmeal.getStatus()")
     @GetMapping("/list")
     public R<List<Setmeal>> list(Setmeal setmeal){
         //todo:用户套餐查看优化，用户第一次查询套餐信息，先去redis中查询有无信息

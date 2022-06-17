@@ -78,10 +78,16 @@
             <version>1.2.9</version>
         </dependency>
 
-<!--springDataRedis依赖-->
+<!--springDataRedis依赖(缓存)-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+<!--spring-boot-cache（缓存）-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
 <!--阿里云短信服务-->

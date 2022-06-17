@@ -13,6 +13,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 @Data
 public class User implements Serializable {
 
+    //serialVersionUID用来作为Java对象序列化中的版本标示之用；
+    //如果一个序列化类没有声明这样一个static final的产量，JVM会根据各种参数为这个类计算一个；
+    // 对于同样一个类，不同版本的JDK可能会得出不同的serivalVersionUID;
+    // 所以为了兼容性，一般自己加一个，至于值自己定就行，不一定是1L
     private static final long serialVersionUID = 1L;
 
     private Long id;

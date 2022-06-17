@@ -29,8 +29,6 @@ public class FilesController {
     @Value("${reggie.path.upload}")
     private  String uploadPath;
 
-    @Value("${reggie.path.download}")
-    private  String downloadPath;
 
 
 

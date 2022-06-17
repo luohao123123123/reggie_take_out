@@ -39,6 +39,10 @@ public class GlobalExceptionHandler {
             String employee = exception.getMessage().split(" ")[2].replace("'","").trim()   ;
             return R.error("菜品["+employee+"]已存在");
         }
+        if(exception.getMessage().contains("Duplicate entry") && exception.getMessage().contains("setmeal")){
+            String employee = exception.getMessage().split(" ")[2].replace("'","").trim()   ;
+            return R.error("套餐["+employee+"]已存在");
+        }
         return R.error("未知错误");
     }
 
