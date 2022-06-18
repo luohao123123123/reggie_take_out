@@ -6,6 +6,8 @@ import com.luohao.reggie.bean.ShoppingCart;
 import com.luohao.reggie.common.BaseContext;
 import com.luohao.reggie.common.CustomException;
 import com.luohao.reggie.service.ShoppingCartService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
+@Api(tags = "购物车Controller")
 @RequestMapping("/shoppingCart")
 public class ShoppingCartController {
 
@@ -24,6 +27,7 @@ public class ShoppingCartController {
      * 获取用户的购物车内商品的集合
      * @return
      */
+    @ApiOperation(value = "获取用户购物车的全部商品信息")
     @GetMapping("/list")
     public R<List<ShoppingCart>> list(){
         LambdaQueryWrapper<ShoppingCart> queryWrapper=new LambdaQueryWrapper<>();
@@ -39,6 +43,7 @@ public class ShoppingCartController {
      * @param shoppingCart
      * @return
      */
+    @ApiOperation(value = "新增菜品或者套餐到购物车")
     @PostMapping("/add")
     public R<ShoppingCart> add(@RequestBody ShoppingCart shoppingCart){
         //执行自定义的添加菜品或者套餐到购物车
@@ -52,6 +57,7 @@ public class ShoppingCartController {
      * @param shoppingCart
      * @return
      */
+    @ApiOperation(value = "购物车菜品的删减")
     @PostMapping("/sub")
     public R<ShoppingCart> deleteShoppingCart(@RequestBody ShoppingCart shoppingCart){
         ShoppingCart shoppingCart1 = shoppingCartService.deleteShoppingCart(shoppingCart);
@@ -62,6 +68,7 @@ public class ShoppingCartController {
      * 清空购物车
      * @return
      */
+    @ApiOperation(value = "清空购物车")
     @DeleteMapping("/clean")
     public R<String> cleanShoppingCart(){
         //根据用户id，清空购物车

@@ -41,7 +41,11 @@ public class LoginCheckFilter implements Filter {
                 "/common/**",
                 "/user/sendMsg", //移动端发送短信
                 "/user/login",  //移动端登录
-                "/druid/**"
+                "/druid/**",     //德鲁伊连接池的查看地址
+                "/doc.html",     //访问接口文档的请求路径
+                "/webjars/**",   //访问接口文档的请求路径
+                "/swagger-resources",   //访问接口文档的请求路径
+                "/v2/api-docs"   //访问接口文档的请求路径
         };
         //2.判断本次请求是否需要处理
         boolean checkFlag = check(urls, requestURI);

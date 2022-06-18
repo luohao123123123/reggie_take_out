@@ -2,6 +2,8 @@ package com.luohao.reggie.controller;
 
 
 import com.luohao.reggie.R.R;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,7 @@ import java.util.UUID;
  */
 @RestController
 @Slf4j
+@Api(tags = "文件上传和下载Controller")
 @RequestMapping("/common")
 public class FilesController {
 
@@ -37,6 +40,7 @@ public class FilesController {
      * @param file
      * @return
      */
+    @ApiOperation(value = "文件上传")
     @PostMapping("/upload")
     public R<String> upload(MultipartFile file){
         //file是一个临时文件
@@ -69,6 +73,7 @@ public class FilesController {
      * @param response
      * @return
      */
+    @ApiOperation(value = "文件下载")
     @GetMapping("/download")
     public void download(String name, HttpServletResponse response){
         try {

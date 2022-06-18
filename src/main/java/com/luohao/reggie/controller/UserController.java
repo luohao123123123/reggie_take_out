@@ -3,15 +3,13 @@ package com.luohao.reggie.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.luohao.reggie.R.R;
 import com.luohao.reggie.bean.User;
-import com.luohao.reggie.common.BaseContext;
 import com.luohao.reggie.service.UserService;
-import com.luohao.reggie.utils.SMSUtils;
 import com.luohao.reggie.utils.ValidateCodeUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RestController
 @Slf4j
+@Api(tags = "用户Controller")
 @RequestMapping("/user")
 public class UserController {
 
@@ -44,6 +42,7 @@ public class UserController {
      * @param user
      * @return
      */
+    @ApiOperation(value = "发送手机验证码")
     @PostMapping("/sendMsg")
     public R<String> sendMsg(@RequestBody User user, HttpSession session){
         //获取手机号
@@ -78,6 +77,7 @@ public class UserController {
      * @param session
      * @return
      */
+    @ApiOperation(value = "用户登录")
     @PostMapping("/login")
     public R<User> login(@RequestBody Map<Object,Object> map, HttpSession session){
         //获取前端页面提交的phone和code
@@ -116,6 +116,7 @@ public class UserController {
      * 退出登录
      * @return
      */
+    @ApiOperation(value = "用户退出登录")
     @PostMapping("/loginout")
     public R<String> loginOut(HttpSession session){
         session.removeAttribute("user");

@@ -15,6 +15,8 @@ import com.luohao.reggie.service.CategoryService;
 import com.luohao.reggie.service.DishFlavorService;
 import com.luohao.reggie.service.DishService;
 import com.luohao.reggie.service.SetmealDishService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +39,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
+@Api(tags = "菜品Controller")
 @RequestMapping("/dish")
 public class DishController {
 
@@ -62,6 +65,7 @@ public class DishController {
      * @param dishDto 用于新增菜品时的数据传输模型
      * @return
      */
+    @ApiOperation(value = "新增菜品")
     @PostMapping
     public R<String> add(@RequestBody DishDto dishDto){
         //执行保存
@@ -83,6 +87,7 @@ public class DishController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "菜品信息分页查询")
     @GetMapping("/page")
     public R<Page<DishDto>> page(int page,int pageSize,String name){
         //执行自定义的分页查询方法dtoPageWithCategoryName
@@ -95,6 +100,7 @@ public class DishController {
      * @param ids 多个菜品id
      * @return
      */
+    @ApiOperation(value = "单个或批量删除菜品信息")
     @DeleteMapping
     public  R<String> delete(@RequestParam(value = "ids") List<Long> ids){
         //直接返回自定义的删除方法
@@ -109,6 +115,7 @@ public class DishController {
      * @param id 菜品id
      * @return
      */
+    @ApiOperation(value = "菜品修改时，回显菜品信息")
     @GetMapping("/{id}")
     public R<DishDto> get(@PathVariable Long id){
         DishDto dishDto = dishService.getDishWithFlavor(id);
@@ -124,6 +131,7 @@ public class DishController {
      * @param dishDto
      * @return
      */
+    @ApiOperation(value = "修改菜品信息")
     @PutMapping
     public R<String> updateDish(@RequestBody DishDto dishDto){
         dishService.updateDishWithFlavor(dishDto);
@@ -139,6 +147,7 @@ public class DishController {
      * 更新菜品状态，如果要停售这个菜品，首先要判断这个菜品是否包含在谋个套餐中，如果包含在某个套餐中则无法停售
      * @return
      */
+    @ApiOperation(value = "更新菜品状态")
     @PostMapping("/status/{status}")
     public R<String> updateDishStatus(@PathVariable Integer status,@RequestParam(value="ids") List<Long> ids){
         //判断菜品要停售时，这个菜品是否包含在某个套餐中，如果包含，则无法停售
@@ -173,6 +182,7 @@ public class DishController {
      * @param dish 菜品信息
      * @return
      */
+    @ApiOperation(value = "回显菜品信息 | 根据菜品id查询菜品信息以及对应的菜品口味信息")
     @GetMapping("list")
     public R<List<DishDto>> getDishByCategoryId(Dish dish){
         //todo:用户菜品查看优化，用户第一次查询分类菜品信息，先去redis中查询有无信息

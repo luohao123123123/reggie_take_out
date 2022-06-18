@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.luohao.reggie.R.R;
 import com.luohao.reggie.bean.Employee;
 import com.luohao.reggie.service.EmployeeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -23,6 +25,7 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 @RestController
+@Api(tags = "员工Controller")
 @RequestMapping("/employee")
 public class EmployeeController {
     @Autowired
@@ -34,6 +37,7 @@ public class EmployeeController {
      * @param employee
      * @return
      */
+    @ApiOperation(value = "员工登录")
     @PostMapping("/login")
     public R<Employee> login(HttpServletRequest request, @RequestBody Employee employee){
         //1.将页面提交的密码进行md5加密
@@ -71,6 +75,7 @@ public class EmployeeController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "员工退出")
     @PostMapping("/logout")
     public R<String> loginout(HttpServletRequest request){
         request.getSession().removeAttribute("employee");
@@ -83,6 +88,7 @@ public class EmployeeController {
      * @param employee
      * @return
      */
+    @ApiOperation(value = "新增员工")
     @PostMapping
     public R<String> add(@RequestBody Employee employee,HttpServletRequest request){
         log.info("新增的员工信息：{}",employee);
@@ -111,6 +117,7 @@ public class EmployeeController {
      * @param name    根据name过滤
      * @return R<Page>
      */
+    @ApiOperation(value = "员工信息分页查询")
     @GetMapping("/page")
     public R<Page<Employee>> page(int page, int pageSize, String name){
         log.info("page:{},pagesize:{},name:{}",page,pageSize,name);
@@ -135,6 +142,7 @@ public class EmployeeController {
      * @param employee
      * @return
      */
+    @ApiOperation(value = "修改员工信息")
     @PutMapping
     public R<String> update(@RequestBody Employee employee){
 
@@ -159,6 +167,7 @@ public class EmployeeController {
      * @param id 员工id
      * @return  Employee
      */
+    @ApiOperation(value = "回显员工信息")
     @GetMapping("/{id}")
     public R<Employee> getEmployeeById(@PathVariable(name = "id") Long id){
         Employee employee = employeeService.getById(id);

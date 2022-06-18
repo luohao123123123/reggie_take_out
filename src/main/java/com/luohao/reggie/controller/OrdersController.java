@@ -11,6 +11,8 @@ import com.luohao.reggie.dto.DishDto;
 import com.luohao.reggie.dto.OrdersDto;
 import com.luohao.reggie.service.OrderDetailService;
 import com.luohao.reggie.service.OrdersService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
+@Api(tags = "订单Controller")
 @RequestMapping("/order")
 public class OrdersController {
 
@@ -37,6 +40,7 @@ public class OrdersController {
      * @param orders
      * @return
      */
+    @ApiOperation(value = "用户提交订单")
     @PostMapping("/submit")
     public R<String> submit(@RequestBody Orders orders){
         //调用自定义的用户下单方法
@@ -45,7 +49,7 @@ public class OrdersController {
     }
 
     /**
-     * 用于用户的分页查询订单  ,bug：用户查看历史订单，无法看到订单中有多少菜品
+     * 用于用户的分页查询订单  ,bug：用户查看历史订单，无法看到订单中有多少菜品（已解决）
      * 1.先查询出订单基本信息的分页数据
      * 2.在构造OrderDto的分页对象
      * 3.进行Page<order>和Page<OrderDto>的数据拷贝
@@ -53,6 +57,7 @@ public class OrdersController {
      * 5.最后返回Page<OrderDto>
      * @return Page<OrderDto>
      */
+    @ApiOperation(value = "用户订单信息的分页查询")
     @GetMapping("/userPage")
     public R<Page<OrdersDto>> userPage(int page, int pageSize){
         //调用自定义的分页方法
@@ -67,6 +72,7 @@ public class OrdersController {
      * @param orders
      * @return
      */
+    @ApiOperation(value = "再来一单")
     @PostMapping("/again")
     public R<String> again(@RequestBody Orders orders){
         return R.success("再来一单成功");
@@ -79,6 +85,7 @@ public class OrdersController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "后台订单信息的分页查询")
     @GetMapping("/page")
     public R<Page<Orders>> page(int page,int pageSize,String number,String beginTime,String endTime){
         Page<Orders> pageInfo=new Page<>(page,pageSize);
@@ -94,6 +101,7 @@ public class OrdersController {
     }
 
     // 取消，派送，完成接口
+    @ApiOperation(value = "修改订单状态")
     @PutMapping
     public R<String> editOrderDetail(@RequestBody Orders orders){
         //根据订单的id修改订单的状态

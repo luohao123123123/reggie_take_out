@@ -95,6 +95,12 @@
             <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
             <version>4.0.0-RC1</version>
         </dependency>
+<!--Knife4j是为java MVC框架集成Swagger生成APi文档的增强解决框架-->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>3.0.2</version>
+        </dependency>
 
 <!--阿里云短信服务-->
         <dependency>

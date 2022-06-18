@@ -6,6 +6,8 @@ import com.luohao.reggie.R.R;
 import com.luohao.reggie.bean.AddressBook;
 import com.luohao.reggie.common.BaseContext;
 import com.luohao.reggie.service.AddressBookService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
+@Api(tags = "地址薄Controller")
 @RequestMapping("/addressBook")
 public class AddressBookController {
 
@@ -27,6 +30,7 @@ public class AddressBookController {
     /**
      * 新增
      */
+    @ApiOperation(value = "新增地址")
     @PostMapping
     public R<AddressBook> save(@RequestBody AddressBook addressBook) {
         //给地址信息设置用户id
@@ -40,6 +44,7 @@ public class AddressBookController {
     /**
      * 设置默认地址
      */
+    @ApiOperation(value = "设置默认地址")
     @PutMapping("default")
     public R<String> setDefault(@RequestBody AddressBook addressBook) {
         log.info("addressBook:{}", addressBook);
@@ -53,6 +58,7 @@ public class AddressBookController {
      * 根据id查询地址
      * 这里用于修改地址时的地址信息回显
      */
+    @ApiOperation(value = "根据地址id查询地址")
     @GetMapping("/{id}")
     public R get(@PathVariable Long id) {
         //根据地址id查询地址信息
@@ -67,6 +73,7 @@ public class AddressBookController {
     /**
      * 查询默认地址
      */
+    @ApiOperation(value = "查询用户的默认地址")
     @GetMapping("default")
     public R<AddressBook> getDefault() {
         //根据用户id查询用户的默认地址信息
@@ -89,6 +96,7 @@ public class AddressBookController {
      * 查询指定用户的全部地址
      * 这里用于用户地址页面的全部地址显示
      */
+    @ApiOperation(value = "查询用户的全部地址信息")
     @GetMapping("/list")
     public R<List<AddressBook>> list(AddressBook addressBook) {
         //调用自定义的获取指定用户的全部地址方法
@@ -102,6 +110,7 @@ public class AddressBookController {
      * @param ids 地址ids
      * @return
      */
+    @ApiOperation(value = "根据地址id删除地址信息")
     @DeleteMapping
     public R<String> delete(Long ids){
         addressBookService.removeById(ids);
@@ -113,6 +122,7 @@ public class AddressBookController {
      * @param addressBook 地址信息
      * @return
      */
+    @ApiOperation(value = "修改地址")
     @PutMapping
     public R<String> update(@RequestBody AddressBook addressBook){
         addressBookService.updateById(addressBook);

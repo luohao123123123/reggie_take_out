@@ -12,6 +12,8 @@ import com.luohao.reggie.dto.SetmealDto;
 import com.luohao.reggie.service.DishService;
 import com.luohao.reggie.service.SetmealDishService;
 import com.luohao.reggie.service.SetmealService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
+@Api(tags = "套餐Controller")
 @RequestMapping("/setmeal")
 public class SetmealController {
 
@@ -54,6 +57,7 @@ public class SetmealController {
      * CacheEvict:可用于类或方法上；在执行完目标方法后，清除缓存中对应key的数据(如果缓存中有对应key的数据缓存的话)
      */
 //    @CacheEvict(value = "setmealInfo",key = "'setmeal_'+#setmealDto.getCategoryId()+'_status_'+#setmealDto.getStatus()")  //方法执行完之后清楚缓存
+    @ApiOperation(value = "新增套餐")
     @PostMapping
     public R<String>  add(@RequestBody SetmealDto setmealDto){
         //保存套餐的基本信息到套餐表
@@ -83,6 +87,7 @@ public class SetmealController {
      * @return
      */
 
+    @ApiOperation(value = "套餐信息的分页查询")
     @GetMapping("/page")
     public R<Page<SetmealDto>> page(int page,int pageSize,String name){
         //执行自定义的分页方法
@@ -98,6 +103,7 @@ public class SetmealController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "回显套餐信息")
     @GetMapping("/{id}")
     public R<SetmealDto> get(@PathVariable Long id){
         //调用自定义的套餐信息获取方法
@@ -112,6 +118,7 @@ public class SetmealController {
      * @return
      */
 //    @CacheEvict(value = "setmealInfo",key = "'setmeal_'+#setmealDto.getCategoryId()+'_status_'+#setmealDto.getStatus()")  //方法执行完之后清楚缓存
+    @ApiOperation(value = "修改套餐信息")
     @PutMapping
     public R<String> update(@RequestBody SetmealDto setmealDto){
         //调用自定义的套餐修改方法
@@ -126,6 +133,7 @@ public class SetmealController {
      * @param ids
      * @return
      */
+    @ApiOperation(value = "删除套餐信息")
     @DeleteMapping
     public R<String> delete(@RequestParam(value ="ids" ) List<Long> ids){
         //调用自定义的套餐删除方法，需要删除套餐的基本信息和套餐中包含的菜品关系
@@ -142,6 +150,7 @@ public class SetmealController {
      * @param ids
      * @return
      */
+    @ApiOperation(value = "更新套餐状态")
     @PostMapping("/status/{status}")
     public R<String> updateWithStatus(@PathVariable Integer status,@RequestParam(value = "ids") List<Long> ids){
         setmealService.updateWithStatus(status,ids);
@@ -160,6 +169,7 @@ public class SetmealController {
      */
     //todo:用户套餐查看优化，用户第一次查询套餐信息，先去redis中查询有无信息
 //    @Cacheable(value = "setmealInfo",key = "'setmeal_'+#setmeal.getCategoryId()+'_status_'+#setmeal.getStatus()")
+    @ApiOperation(value = "移动端的套餐查询")
     @GetMapping("/list")
     public R<List<Setmeal>> list(Setmeal setmeal){
         //todo:用户套餐查看优化，用户第一次查询套餐信息，先去redis中查询有无信息
@@ -194,6 +204,7 @@ public class SetmealController {
      * 这里用于移动端获取套餐的全部菜品
      * @return
      */
+    @ApiOperation(value = "移动端获取套餐的全部菜品")
     @GetMapping("/dish/{id}")
     public R<List<DishDto>> getSetmealWithDish(@PathVariable(value = "id") Long setmealId){
         //调用自定义的查询套餐中菜品信息的方法

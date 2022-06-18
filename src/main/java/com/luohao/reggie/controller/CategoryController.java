@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.luohao.reggie.R.R;
 import com.luohao.reggie.bean.Category;
 import com.luohao.reggie.service.CategoryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
+@Api(tags = "分类Controller")
 @RequestMapping("/category")
 public class CategoryController {
     @Autowired
@@ -28,6 +31,7 @@ public class CategoryController {
      * @param category 分类
      * @return
      */
+    @ApiOperation(value = "新增分类")
     @PostMapping
     public R<Integer> add(@RequestBody Category category){
         categoryService.save(category);
@@ -45,6 +49,7 @@ public class CategoryController {
      * @param pageSize 一页多少条
      * @return
      */
+    @ApiOperation(value = "分类信息分页查询")
     @GetMapping("/page")
     public R<Page<Category>> page(int page,int pageSize){
         //构造分页构造器
@@ -63,6 +68,7 @@ public class CategoryController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "根据分类id删除分类信息")
     @DeleteMapping
     public R<String> delete(Long id){
         //在删除之前，要判断这个分类信息有没有关联菜品或者套餐
@@ -77,6 +83,7 @@ public class CategoryController {
      * @param category
      * @return
      */
+    @ApiOperation(value = "分类信息的修改")
     @PutMapping
     public R<Integer> update(@RequestBody Category category){
         //执行更新操作
@@ -91,6 +98,7 @@ public class CategoryController {
      * 菜品管理中的添加菜品，需要获取到所有的菜品分类
      * @return
      */
+    @ApiOperation(value = "获取所有的菜品分类")
     @GetMapping("/list")
     public R<List<Category>> list(Category category){
         //构造条件查询器
