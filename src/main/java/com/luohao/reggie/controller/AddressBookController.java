@@ -46,12 +46,12 @@ public class AddressBookController {
      */
     @ApiOperation(value = "设置默认地址")
     @PutMapping("default")
-    public R<String> setDefault(@RequestBody AddressBook addressBook) {
+    public R<AddressBook> setDefault(@RequestBody AddressBook addressBook) {
         log.info("addressBook:{}", addressBook);
         //调用自定义的设置默认地址方法
        addressBookService.setDefault(addressBook);
 
-        return R.success("设置默认地址成功");
+        return R.success(addressBook);
     }
 
     /**
