@@ -2,8 +2,8 @@
 1.开启redis
     进入redis/src目录执行：
         redis-server /opt/apps/redis/redis.conf
-    使用ps aux | grep 'redis'查看进程
-2.开启主从mysql服务
+    使用ps aux | grep 'redis' 查看进程
+2.开启主从mysql服务 （已经设置开机自启动）
     开启之前可以使用navicat，看能不能连接得上
     开启命令：
      /opt/apps/mysql/mysql-8.0/support-files/mysql.server restart
