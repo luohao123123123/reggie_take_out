@@ -7,3 +7,6 @@
     开启之前可以使用navicat，看能不能连接得上
     开启命令：
      /opt/apps/mysql/mysql-8.0/support-files/mysql.server restart
+
+3.后台地址：http://localhost:8080/backend/index.html
+4.移动端地址：http://localhost:8080/front/index.html
